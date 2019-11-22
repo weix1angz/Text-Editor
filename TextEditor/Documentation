@@ -1,0 +1,27 @@
+GUI - load file(processing)
+	- save as
+	- error log
+	- preview
+
+Input: text files -> processing -> formatted files
+
+defaults: 80 charas per line
+		  left
+		  merge lines
+
+
+-r right justification
+-c center
+-l left shifted
+-t centered, no justification
+
+-d double space
+-s single space
+
+-i indent on 1st line, 5 spaces
+-b indent multiple lines, 10 spaces
+
+-2 2 columns, 35chs/10chs/35chs
+-1 1 column
+
+-e blank line
