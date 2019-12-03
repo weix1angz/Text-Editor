@@ -32,6 +32,8 @@ public class EditorGUI extends Application{
 			FileChooser fileChooser = new FileChooser(); 
 			File file = fileChooser.showOpenDialog(stage);
 			if(file != null) {
+				EditorModel model = new EditorModel(file);
+				EditorController controller = new EditorController(model);
 				textArea.clear();
 				try {
 					Scanner in = new Scanner(new FileReader(file));
@@ -39,6 +41,7 @@ public class EditorGUI extends Application{
 						textArea.appendText(in.nextLine());
 						textArea.appendText("\n");
 					}
+					model.setContent(textArea.getText());
 				} catch (FileNotFoundException e) {
 					
 				}

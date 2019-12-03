@@ -5,7 +5,7 @@ GUI - load file(processing)
 
 Input: text files -> processing -> formatted files
 
-defaults: 80 charas per line
+defaults: 80 chars per line
 		  left
 		  merge lines
 
@@ -15,6 +15,7 @@ defaults: 80 charas per line
 -l left shifted
 -t centered, no justification
 
+-n 
 -d double space
 -s single space
 
