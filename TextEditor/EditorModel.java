@@ -79,6 +79,18 @@ public class EditorModel {
 		String newLine = new String();
 		while(in.hasNextLine()) {
 			String line = in.nextLine().trim();
+			if(blankLine) {
+				if(rightJustification == true) {
+					newLine = rightJust(newLine);
+				}
+				if(centerJustification == true) {
+					newLine = centerJust(newLine);
+				}
+				formattedContent += new String(newLine) + "\n";
+				formattedContent += "\n";
+				newLine = new String();
+				blankLine = false;
+			}
 			if(line.length() > 0 && line.charAt(0) != '-') {
 				String[] words = line.split(" ");
 				for(String word : words) {
@@ -87,28 +99,26 @@ public class EditorModel {
 						newLine += "     ";
 						indentFirstLine = false;
 					}
-//					if(indentMultipleLines && !indentFirstLine) {
-//						// indent 10 white spaces except the first line 
-//						newLine = "          " + newLine;
-//						System.out.println(newLine);
-//						indentMultipleLines = false;
-//					}
+				
 					if(newLine.length() + word.length() <= MAX_LENGTH) {
 						newLine += word + " ";
 					}else {
-						formattedContent += new String(newLine) + "\n";
-						// -e command encountered
-						if(blankLine) {
-							formattedContent += "\n";
-							blankLine = false;
+						if(rightJustification == true) {
+							newLine = rightJust(newLine);
 						}
-						
+						if(centerJustification == true) {
+							newLine = centerJust(newLine);
+						}
+						formattedContent += new String(newLine) + "\n";
+					
 						newLine = new String(word + " ");
 						if(indentMultipleLines)
 							newLine = "          " + newLine + " ";
 						
 					}
+					
 				}
+				
 			// possible command line 
 			}else if(line.length() > 0 && line.charAt(0) == '-') {
 				String command = line.substring(0, 2);
@@ -121,12 +131,15 @@ public class EditorModel {
 					switch(command) {
 						case "-r":
 							rightJustification = true;
+							centerJustification = false;
 							break;
 						case "-c":
 							centerJustification = true;
+							rightJustification = false;
 							break;
 						case "-l":
 							rightJustification = false;
+							centerJustification = false;
 							break;
 							
 						case "-d":
@@ -154,12 +167,19 @@ public class EditorModel {
 							
 						case "-e":
 							blankLine = true;
+							
 							break;
 						
 					}
 				}
 			}
 			
+		}
+		if(rightJustification == true) {
+			newLine = rightJust(newLine);
+		}
+		if(centerJustification == true) {
+			newLine = centerJust(newLine);
 		}
 		formattedContent += newLine + "\n";
 		System.out.print(formattedContent);
@@ -281,6 +301,31 @@ public class EditorModel {
 		return errorMessage.toString();
 	}
 	
+	public String rightJust(String newLine) {
+		newLine = newLine.substring(0, newLine.length()-1);
+		int gap = MAX_LENGTH - newLine.length();
+		String gap1 = "";
+		while(gap >= 0) {
+			gap1 += " ";
+			gap--;
+		}
+		newLine = gap1 + newLine;
+		return newLine;
+	}
+	
+	public String centerJust(String newLine) {
+		int gap = MAX_LENGTH - newLine.length();
+		newLine = newLine.substring(0, newLine.length()-1);
+		if(gap%2 == 1) {
+			newLine = newLine + " ";
+			gap--;
+		}
+		while(gap >= 0) {
+			newLine = " " + newLine + " ";
+			gap -= 2;
+		}
+		return newLine;
+	}
 	
 	
 	
