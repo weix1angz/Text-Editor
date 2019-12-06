@@ -1,4 +1,4 @@
-import java.io.File;
+
 
 public class EditorController {
 	EditorModel model;
@@ -7,7 +7,4 @@ public class EditorController {
 		this.model = model;
 	}
 	
-	public void setContent(String content) {
-		model.setContent(content);
-	}
 }

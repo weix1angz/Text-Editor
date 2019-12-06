@@ -1,16 +1,22 @@
-import java.awt.Insets;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.control.*;
 import javafx.scene.*;
 public class EditorGUI extends Application{
+	EditorModel model = null;
+	EditorController controller = null;
+	boolean ifLoadFile = false;
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -19,6 +25,7 @@ public class EditorGUI extends Application{
 		BorderPane background = new BorderPane();
 		VBox options = new VBox();
 		TextArea textArea = new TextArea();
+		textArea.setFont(Font.font("Menlo"));
 		Button loadFile = new Button("Load File");
 		loadFile.setMaxWidth(100);
 		Button saveFile = new Button("Save as");
@@ -28,42 +35,81 @@ public class EditorGUI extends Application{
 		Button preview = new Button("Preview");
 		preview.setMaxWidth(100);
 		
+		
+		
+		
+		// load file button handler
 		loadFile.setOnAction(MouseClicked -> {
 			FileChooser fileChooser = new FileChooser(); 
 			File file = fileChooser.showOpenDialog(stage);
 			if(file != null) {
-				EditorModel model = new EditorModel(file);
-				EditorController controller = new EditorController(model);
+				ifLoadFile = true;
+				try {
+					model = new EditorModel(file);
+				} catch (FileNotFoundException e1) {
+				}
+				controller = new EditorController(model);
 				textArea.clear();
 				try {
 					Scanner in = new Scanner(new FileReader(file));
 					while(in.hasNextLine()) {
 						textArea.appendText(in.nextLine());
 						textArea.appendText("\n");
+						
 					}
-					model.setContent(textArea.getText());
+					in.close();
 				} catch (FileNotFoundException e) {
 					
 				}
 			}
 		});
 		
+		// save file button handler
 		saveFile.setOnAction(MouseClicked -> {
+			FileChooser fileChooser = new FileChooser();
+			FileChooser.ExtensionFilter extension=new 
+					FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+			fileChooser.getExtensionFilters().add(extension);
+			File file = fileChooser.showSaveDialog(stage);
+			if(file!=null)
+			{
+				if(model.ifInvalid()) {
+					SaveFile(model.getDafultContent(),file);
+				}else {
+					SaveFile(model.getFormattedContent(),file);
+				}
+			}
 			
 		});
 		
+		// error log button handler
 		errorLog.setOnAction(MouseClicked -> {
 			Stage errorWindow = new Stage();
 			BorderPane errorPane = new BorderPane();
 			TextArea error = new TextArea();
 			error.setPrefSize(400, 400);
 			errorPane.setCenter(error);
+			error.setText(model.getErrorMessage());
 			Scene errorScene = new Scene(errorPane);
 			errorWindow.setScene(errorScene);
 			errorWindow.show();
 		});
 		
-				
+		// preview button handler
+		preview.setOnAction(MouseClicked -> {
+			if(ifLoadFile) {
+				if(model.ifInvalid()) {
+					textArea.clear();
+					textArea.setText(model.getDafultContent());
+				}else {
+					textArea.clear();
+					textArea.setText(model.getFormattedContent());
+				}
+			}
+			
+		});
+		
+		
 		textArea.setPrefSize(600, 500);
 		options.getChildren().addAll(loadFile, saveFile, errorLog, preview);
 		
@@ -77,6 +123,20 @@ public class EditorGUI extends Application{
 		
 		
 	
+	}
+	private void SaveFile(String text,File file)
+	{
+		try
+		{
+				FileWriter writer=new FileWriter(file);
+				writer.write(text);
+				writer.close();
+		}
+		catch (IOException e)
+		{
+			
+		}
+		
 	}
 	
 	

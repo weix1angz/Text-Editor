@@ -14,13 +14,13 @@ defaults: 80 chars per line
 -c center
 -l left shifted
 -t centered, no justification
-
--n 
+ 
 -d double space
 -s single space
 
 -i indent on 1st line, 5 spaces
 -b indent multiple lines, 10 spaces
+-n indent block ends
 
 -2 2 columns, 35chs/10chs/35chs
 -1 1 column
